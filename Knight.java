@@ -33,12 +33,13 @@ public class Knight{
 		return this.validMove;
 	}
 
-	public void acceptMove(Move s){
+	public void acceptMove(Move s, Board board){
 		if (this.validMove = true){
 			lastX = currentX;
 			lastY = currentY;
 			currentX += s.x;
 			currentY += s.y;
+			board.updateKnightOnBoard(this);
 		}
 	}
 	
