@@ -174,11 +174,11 @@ public class Questions {
 
 	private static void questionThree(){
 		System.out.println("\n=========== Level 3 ===========");
-		size = 8;		
-		startX = 2;
-		startY = 2;
-		endX = 1;
-		endY = 8;
+		size = 32;		
+		startX = 8;
+		startY = 6;
+		endX = 31;
+		endY = 18;
 		knight = new Knight(startX, startY);		
 		board = new Board(size, knight);
 		board.setSquareCount(startX, startY, 1);
@@ -201,11 +201,8 @@ public class Questions {
 		
 		ArrayList<Move> moves = steps2moves(startX, startY, steps);
 		questionOne(moves);
-		
-
 	}
 
-	
 	private static boolean checkEnd(ArrayList<Square> steps, ArrayList<Square> q, int endX, int endY, int count) {
 		for (Square s: q){
 			board.setSquareCount(s.x, s.y, count);		
@@ -253,6 +250,9 @@ public class Questions {
 		return false;
 	}
 	
+	private static void questionFour(){
+		
+	}
 	
 	
 }
