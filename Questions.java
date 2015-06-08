@@ -36,7 +36,18 @@ public class Questions {
 				
 		
 		// Q1		
-//		questionOne();
+		size = 8;
+		startX = 2;
+		startY = 1;
+		endX = 3;
+		endY = 4;
+		ArrayList<Move> steps = new ArrayList<Move>();
+		steps.clear();			
+		steps.add(new Move(-1,2)); 			
+		steps.add(new Move(-1,2)); 		
+		steps.add(new Move(12,-1)); 
+		questionOne(steps);	// q1 solution
+		steps.clear();
 		
 		// Q2
 //		questionTwo();
@@ -46,28 +57,20 @@ public class Questions {
 }
 	
 	private static void questionOne(ArrayList<Move> steps){
+		System.out.println("=========== Level 1 ===========\n");
 		// initialize board and knight
-		
 		knight = new Knight(startX, startY);
 		board = new Board(size, knight);
-		startX = 1;
-		startY = 1;
-		endX = 8;
-		endY = 8;
+		
 		board.setStartEnd(startX, startY, endX, endY);
 		board.printInitialBoard();
 				
-		// input in a sequence of steps 
-//		ArrayList<Move> steps = new ArrayList<Move>();
-//		steps.clear();			
-//		steps.add(new Move(-1,2)); 			
-//		steps.add(new Move(-1,2)); 		
-//		steps.add(new Move(2,-1)); 	
+		// input in a sequence of steps 	
 		int c = 1;
 		for (Move s : steps){
-			System.out.printf("\n*********** Step %d **********\n", c++);			
+			System.out.printf("\n***** Step %d *****\n", c++);			
 			if (!knight.validMove(s, board)){
-				System.out.println("Q1 Answer: Invalide sequence.");
+				System.out.println("Is Valide moves? No!");
 				return;
 			}
 			else{
@@ -77,7 +80,7 @@ public class Questions {
 				board.printBoard();
 			}
 		}
-		System.out.println("Q1 Answer: Valid sequence");
+		System.out.println("Is Valide moves? Yes.");
 	}
 	
 	private static void questionTwo(){
@@ -140,7 +143,6 @@ public class Questions {
 		
 		if (nbrs.isEmpty() && count > total)
 			return false;
-
 		
 		for(Square nb : nbrs) {
 			board.setSquareCount(nb.x, nb.y, count);
@@ -171,10 +173,11 @@ public class Questions {
 	}
 
 	private static void questionThree(){
+		System.out.println("\n=========== Level 3 ===========");
 		size = 8;		
-		startX = 1;
-		startY = 1;
-		endX = 8;
+		startX = 2;
+		startY = 2;
+		endX = 1;
 		endY = 8;
 		knight = new Knight(startX, startY);		
 		board = new Board(size, knight);
@@ -184,10 +187,10 @@ public class Questions {
 		
 		ArrayList<Square> steps = new ArrayList<Square>();		
 		ArrayList<Square> q = new ArrayList<Square>();		
-		
+		steps.clear();
 		q.add(board.getSquare(startX, startY));
 		findShortestPath(steps, startX, startY, endX, endY, 1);
-		board.printBoardCount();
+//		board.printBoardCount();
 		
 	    Collections.reverse(steps);
 		System.out.println("Find Shortest Path:");
@@ -198,34 +201,36 @@ public class Questions {
 		
 		ArrayList<Move> moves = steps2moves(startX, startY, steps);
 		questionOne(moves);
+		
+
 	}
 
 	
 	private static boolean checkEnd(ArrayList<Square> steps, ArrayList<Square> q, int endX, int endY, int count) {
 		for (Square s: q){
 			board.setSquareCount(s.x, s.y, count);		
-			board.printBoardCount();
+//			board.printBoardCount();
 			if (s.x == endX && s.y == endY){
 				steps.add(s);
-				board.printBoardCount();
+//				board.printBoardCount();
 				Square par = pathMap.get(s);
 				
 				while(par.count != 1){
 					steps.add(par);
-					System.out.printf("Path: [%d, %d]\n", par.x, par.y);
+//					System.out.printf("Path: [%d, %d]\n", par.x, par.y);
 					par = pathMap.get(par);
 				}
 				
 				return true;
 			}
 		}
-		board.printBoardCount();
+//		board.printBoardCount();
 		return false;
 	}
 
 	private static boolean findShortestPath(ArrayList<Square> steps,int startX, int startY, int endX, int endY, int count)
 	{
-		board.printBoardCount();
+//		board.printBoardCount();
 		knight.currentX = startX;
 		knight.currentY = startY;
 		
