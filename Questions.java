@@ -3,6 +3,7 @@ package KnightMove;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Stack;
 import java.lang.Math;
 import java.util.*;
@@ -17,6 +18,8 @@ public class Questions {
 	public static int startY;
 	public static int endX;
 	public static int endY;
+    public static Hashtable<Square, Square> pathMap = new Hashtable<Square, Square>();
+
 	
 	// Define legal moves
 	public final static ArrayList<Move> moves = new ArrayList<Move>();
@@ -158,10 +161,12 @@ public class Questions {
 			if (knight.validMove(m, board)){
 				Square s = board.getSquare(knight.currentX+m.x, knight.currentY+m.y);
 				if (s.count == 0){
+					pathMap.put(s, board.getSquare(knight.currentX, knight.currentY));
 					nbrs.add(s);
 				}
 			}
 		}
+
 		return nbrs;
 	}
 
@@ -169,8 +174,8 @@ public class Questions {
 		size = 8;		
 		startX = 1;
 		startY = 1;
-		endX = 4;
-		endY = 4;
+		endX = 8;
+		endY = 8;
 		knight = new Knight(startX, startY);		
 		board = new Board(size, knight);
 		board.setSquareCount(startX, startY, 1);
@@ -192,7 +197,7 @@ public class Questions {
 		}
 		
 		ArrayList<Move> moves = steps2moves(startX, startY, steps);
-//		questionOne(moves);
+		questionOne(moves);
 	}
 
 	
@@ -203,6 +208,14 @@ public class Questions {
 			if (s.x == endX && s.y == endY){
 				steps.add(s);
 				board.printBoardCount();
+				Square par = pathMap.get(s);
+				
+				while(par.count != 1){
+					steps.add(par);
+					System.out.printf("Path: [%d, %d]\n", par.x, par.y);
+					par = pathMap.get(par);
+				}
+				
 				return true;
 			}
 		}
