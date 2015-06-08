@@ -36,10 +36,7 @@ public class Questions {
 //		questionOne();
 		
 		// Q2
-//		questionTwo();
-		
-		// Q3
-		questionThree();
+		questionTwo();
 }
 	
 	private static void questionOne(ArrayList<Move> steps){
@@ -127,7 +124,7 @@ public class Questions {
 		knight.currentY = startY;
 		
 		if (knight.currentX == endX && knight.currentY == endY){
-			board.printBoardCount();
+//			board.printBoardCount();
 			return true;
 		}
 		
@@ -165,76 +162,4 @@ public class Questions {
 		return nbrs;
 	}
 
-	private static void questionThree(){
-		size = 8;		
-		startX = 1;
-		startY = 1;
-		endX = 4;
-		endY = 4;
-		knight = new Knight(startX, startY);		
-		board = new Board(size, knight);
-		board.setSquareCount(startX, startY, 1);
-		board.setStartEnd(startX, startY, endX, endY);
-		board.printInitialBoard();
-		
-		ArrayList<Square> steps = new ArrayList<Square>();		
-		ArrayList<Square> q = new ArrayList<Square>();		
-		
-		q.add(board.getSquare(startX, startY));
-		findShortestPath(steps, startX, startY, endX, endY, 1);
-		board.printBoardCount();
-		
-	    Collections.reverse(steps);
-		System.out.println("Find Shortest Path:");
-		int c = 1;
-		for (Square m : steps){
-			System.out.printf("%d: %d, %d\n", c++, m.x, m.y);
-		}
-		
-		ArrayList<Move> moves = steps2moves(startX, startY, steps);
-//		questionOne(moves);
-	}
-
-	
-	private static boolean checkEnd(ArrayList<Square> steps, ArrayList<Square> q, int endX, int endY, int count) {
-		for (Square s: q){
-			board.setSquareCount(s.x, s.y, count);		
-			board.printBoardCount();
-			if (s.x == endX && s.y == endY){
-				steps.add(s);
-				board.printBoardCount();
-				return true;
-			}
-		}
-		board.printBoardCount();
-		return false;
-	}
-
-	private static boolean findShortestPath(ArrayList<Square> steps,int startX, int startY, int endX, int endY, int count)
-	{
-		board.printBoardCount();
-		knight.currentX = startX;
-		knight.currentY = startY;
-		
-		ArrayList<Square> nbrs = new ArrayList<Square>();
-		nbrs.addAll(neighbors(knight));
-		
-		if(!nbrs.isEmpty()){
-			knight.printKnight();				
-			while (!checkEnd(steps, nbrs, endX, endY, ++count)){
-				ArrayList<Square> q = new ArrayList<Square>();
-				for(Square nb : nbrs){
-					knight.currentX = nb.x;
-					knight.currentY = nb.y;
-					q.addAll(neighbors(knight));
-				}
-				nbrs = q;
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	
-	
 }
