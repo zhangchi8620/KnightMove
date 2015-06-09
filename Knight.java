@@ -21,11 +21,11 @@ public class Knight{
 		this.validMove = false;
 	}
 	
-	public boolean validMove(Move step, Board board){
-		int nX = this.currentX + step.x;
-		int nY = this.currentY + step.y;
+	public boolean validMove(Move move, Board board){
+		int nX = this.currentX + move.x;
+		int nY = this.currentY + move.y;
 		
-		if (step.validMove() && nX > 0 && nX < board.size+1 && nY > 0 && nY < board.size+1){
+		if (move.validMove() && nX > 0 && nX < board.size+1 && nY > 0 && nY < board.size+1){
 			this.validMove = true;
 		}
 		else
@@ -33,11 +33,11 @@ public class Knight{
 		return this.validMove;
 	}
 
-	public boolean validMoveCons(Move step, Board board){
-		int nX = this.currentX + step.x;
-		int nY = this.currentY + step.y;
+	public boolean validMoveCons(Move move, Board board){
+		int nX = this.currentX + move.x;
+		int nY = this.currentY + move.y;
 		
-		if (step.validMove() && nX > 0 && nX < board.size+1 && nY > 0 && nY < board.size+1 && noBarrierRock(step, board)){
+		if (move.validMove() && nX > 0 && nX < board.size+1 && nY > 0 && nY < board.size+1 && noBarrierRock(move, board)){
 			this.validMove = true;
 		}
 		else
@@ -68,6 +68,21 @@ public class Knight{
 			lastY = currentY;
 			currentX += s.x;
 			currentY += s.y;
+//			// add transfer "T"
+//			if (board.getSquare(currentX, currentY).getSquareStatus() == "T" ){
+//				Square transferSquare = board.transfer2Square(currentX, currentY);
+//				currentX = transferSquare.x;
+//				currentY = transferSquare.y;
+//			}
+			board.updateKnightOnBoard(this);
+		}
+	}
+	
+	public void transfer2Square(Board board){
+		if (board.getSquare(currentX, currentY).getSquareStatus() == "T" ){
+			Square transferSquare = board.transfer2Square(currentX, currentY);
+			currentX = transferSquare.x;
+			currentY = transferSquare.y;
 			board.updateKnightOnBoard(this);
 		}
 	}

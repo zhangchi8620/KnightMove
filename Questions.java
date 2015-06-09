@@ -66,7 +66,7 @@ public class Questions {
 		board = new Board(size, knight);
 		
 		board.setStartEnd(startX, startY, endX, endY);
-		setConstrains();
+		board.setConstrains();
 		board.printInitialBoard();
 				
 		
@@ -81,6 +81,7 @@ public class Questions {
 			else{
 				knight.acceptMove(s, board);
 				knight.printKnight();
+				System.out.printf("count: %d\n", board.getSquare(knight.currentX, knight.currentY).getSquareCount());
 				s.printMove();
 				board.printBoard();
 			}
@@ -180,11 +181,17 @@ public class Questions {
 	
 	private static ArrayList<Square> neighborsCons(Knight knight) {
 		ArrayList<Square> nbrs = new ArrayList<Square>();
+
+		knight.transfer2Square(board);
+		
+		Square k = board.getSquare(knight.currentX, knight.currentY);
+		board.setSquareCount(knight.currentX, knight.currentY, k.getSquareCount()+1);	
 		
 		for(Move m : moves){
 			if (knight.validMoveCons(m, board)){
 				Square s = board.getSquare(knight.currentX+m.x, knight.currentY+m.y);
-				if (s.count == 0){
+				if (s.count == 0 || s.count > k.getSquareCount()+contCons(k)){
+//					board.setSquareCount(s.x, s.y, k.getSquareCount()+contCons(s));		
 					pathMap.put(s, board.getSquare(knight.currentX, knight.currentY));
 					nbrs.add(s);
 				}
@@ -247,6 +254,35 @@ public class Questions {
 		return false;
 	}
 
+	private static boolean checkEndCons(ArrayList<Square> steps, ArrayList<Square> q, int endX, int endY, int count) {
+		for (Square s: q){
+			board.setSquareCount(s.x, s.y, count+contCons(s));		
+//			board.printBoardCount();
+			if (s.x == endX && s.y == endY){
+				steps.add(s);
+				board.printBoardCount();
+				Square par = pathMap.get(s);
+				
+				while(par.count != 1){
+					steps.add(par);
+//					System.out.printf("Path: [%d, %d]\n", par.x, par.y);
+					par = pathMap.get(par);
+				}
+				return true;
+			}
+		}
+//		board.printBoardCount();
+		return false;
+	}
+	
+	private static int contCons(Square s) {
+		if (s.getSquareStatus() == "W")
+			return 1;
+		if (s.getSquareStatus() == "L")
+			return 4;
+		return 0;
+	}
+
 	private static boolean findShortestPath(ArrayList<Square> steps,int startX, int startY, int endX, int endY, int count)
 	{
 //		board.printBoardCount();
@@ -259,6 +295,7 @@ public class Questions {
 		if(!nbrs.isEmpty()){
 			knight.printKnight();				
 			while (!checkEnd(steps, nbrs, endX, endY, ++count)){
+				board.printBoardCount();
 				ArrayList<Square> q = new ArrayList<Square>();
 				for(Square nb : nbrs){
 					knight.currentX = nb.x;
@@ -272,166 +309,66 @@ public class Questions {
 		return false;
 	}
 	
+	private static boolean findShortestPathCons(ArrayList<Square> steps,int startX, int startY, int endX, int endY, int count)
+	{
+//		board.printBoardCount();
+		knight.currentX = startX;
+		knight.currentY = startY;
+		
+		ArrayList<Square> nbrs = new ArrayList<Square>();
+		nbrs.addAll(neighborsCons(knight));
+		
+		if(!nbrs.isEmpty()){
+			knight.printKnight();				
+			while (!checkEndCons(steps, nbrs, endX, endY, ++count)){
+				board.printBoardCount();
+				ArrayList<Square> q = new ArrayList<Square>();
+				for(Square nb : nbrs){
+					knight.currentX = nb.x;
+					knight.currentY = nb.y;
+					q.addAll(neighborsCons(knight));
+				}
+				nbrs = q;
+			}
+			board.printBoardCount();
+
+			return true;
+		}
+		return false;
+	}
+	
 	private static void questionFour(){
 		System.out.println("\n=========== Level 4 ===========");
 		size = 32;		
-		startX = 10;
-		startY = 3;
-		endX = 12;
-		endY = 7;
+		startX = 22;
+		startY = 27;
+		endX = 11;
+		endY = 25;
 		knight = new Knight(startX, startY);		
 		board = new Board(size, knight);
 		board.setSquareCount(startX, startY, 1);
 		board.setStartEnd(startX, startY, endX, endY);
-		setConstrains();
+		board.setConstrains();
 		board.printInitialBoard();
 		
 		ArrayList<Square> steps = new ArrayList<Square>();		
 		ArrayList<Square> q = new ArrayList<Square>();		
 		steps.clear();
 		q.add(board.getSquare(startX, startY));
-		findShortestPath(steps, startX, startY, endX, endY, 1);
+		findShortestPathCons(steps, startX, startY, endX, endY, 1);
 //		board.printBoardCount();
 		
 	    Collections.reverse(steps);
-		System.out.println("Find Shortest Path:");
+		System.out.println("Find Shortest Path with Cons:");
 		int c = 1;
 		for (Square m : steps){
 			System.out.printf("%d: %d, %d\n", c++, m.x, m.y);
 		}
 		
 		ArrayList<Move> moves = steps2moves(startX, startY, steps);
-		questionOne(moves);
+		
+//		questionOne(moves);
 		
 	}
-	
-	private static void setConstrains(){
-		// creat "B"
-		for (int i = 1; i < 9; i++)
-			board.setSquareStatus(i, 9, "B");
-		for(int i = 11; i < 21; i++)
-			board.setSquareStatus(10, i, "B");
-		board.setSquareStatus(8, 10, "B");
-		board.setSquareStatus(9, 10, "B");
-		board.setSquareStatus(9, 11, "B");
-		for (int i = 10; i < 16; i++)
-			board.setSquareStatus(i, 20, "B");
-		for (int i = 15; i < 20; i++)
-			board.setSquareStatus(i, 16, "B");
-		board.setSquareStatus(15, 17, "B");
-		board.setSquareStatus(15, 18, "B");
-		board.setSquareStatus(15, 19, "B");
 		
-		board.setSquareStatus(19, 17, "B");
-		board.setSquareStatus(19, 18, "B");
-
-		board.setSquareStatus(20, 18, "B");
-		board.setSquareStatus(21, 18, "B");
-
-		for (int i = 22; i < 29; i++)
-			board.setSquareStatus(i, 12, "B");
-		board.setSquareStatus(22, 14, "B");
-		board.setSquareStatus(22, 13, "B");
-
-		for (int i = 29; i < 33; i++)
-			board.setSquareStatus(18, i, "B");
-		board.setSquareStatus(19, 29, "B");
-
-		for(int i = 25; i < 30; i++)
-			board.setSquareStatus(20, i, "B");
-		board.setSquareStatus(21, 25, "B");
-		board.setSquareStatus(22, 25, "B");
-
-		for (int i = 22;i<26;i++)
-			board.setSquareStatus(i, 26, "B");
-
-		// create "W"
-		for(int i = 9; i < 15; i++)
-			board.setSquareStatus(i, 9, "W");
-		for(int i = 10; i < 15; i++)
-			board.setSquareStatus(i, 10, "W");
-		
-		board.setSquareStatus(15, 4, "W");
-		board.setSquareStatus(15, 5, "W");
-		board.setSquareStatus(16, 4, "W");
-		board.setSquareStatus(16, 5, "W");
-
-		for (int i = 1; i < 5; i++)
-			board.setSquareStatus(17, i, "W");
-
-		for(int i = 4; i < 11; i++)
-			board.setSquareStatus(13, i, "W");
-		for(int i = 4; i < 11; i++)
-			board.setSquareStatus(14, i, "W");
-		for(int i = 4; i < 11; i++)
-			board.setSquareStatus(18, i, "W");
-		for(int i = 4; i < 11; i++)
-			board.setSquareStatus(19, i, "W");
-		for(int i = 4; i < 11; i++)
-			board.setSquareStatus(20, i, "W");
-		for(int i = 4; i < 11; i++)
-			board.setSquareStatus(21, i, "W");
-		
-		for(int i = 26; i < 33; i++)
-			board.setSquareStatus(15, i, "W");	
-		board.setSquareStatus(16, 26, "W");	
-
-		for(int i = 20; i < 27; i++)
-			board.setSquareStatus(17, i, "W");	
-		
-		for(int i = 19; i < 25; i++)
-			board.setSquareStatus(20, i, "W");		
-		for(int i = 19; i < 25; i++)
-			board.setSquareStatus(21, i, "W");		
-		
-		// create "L"
-		for(int i = 1; i < 7; i++)
-			for (int j = 13; j < 16; j++)
-				board.setSquareStatus(i, j, "L");	
-		
-		for(int i = 19; i <22; i++)
-			board.setSquareStatus(3, i, "L");	
-		
-		for(int i = 18; i <21; i++)
-			board.setSquareStatus(4, i, "L");
-		
-		for(int i = 16; i <21; i++)
-			board.setSquareStatus(5, i, "L");	
-		for(int i = 16; i <19; i++)
-			board.setSquareStatus(6, i, "L");	
-		
-		// create "R"
-		for(int i = 10; i <12; i++)
-			for (int j = 4; j < 6; j++)
-				board.setSquareStatus(i, j, "R");	
-		
-		for(int i = 23; i <25; i++)
-			for (int j = 6; j < 8; j++)
-				board.setSquareStatus(i, j, "R");	
-		
-		for(int i = 25; i <27; i++)
-			for (int j = 18; j < 20; j++)
-				board.setSquareStatus(i, j, "R");	
-		
-		for(int i = 27; i <29; i++)
-			for (int j = 23; j < 25; j++)
-				board.setSquareStatus(i, j, "R");
-		
-		for(int i = 14; i <16; i++)
-			for (int j = 23; j < 25; j++)
-				board.setSquareStatus(i, j, "R");	
-		
-		for(int i = 7; i <9; i++)
-			for (int j = 22; j < 24; j++)
-				board.setSquareStatus(i, j, "R");	
-		
-		for(int i = 4; i <6; i++)
-			for (int j = 24; j < 26; j++)
-				board.setSquareStatus(i, j, "R");	
-		
-		// create "T"
-		board.setSquareStatus(12, 27, "T");	
-		board.setSquareStatus(24, 28, "T");	
-	}
-	
 }

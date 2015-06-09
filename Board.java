@@ -87,7 +87,7 @@ public class Board {
 		return squares[x-1][y-1];
 	}
 	
-	private void setConstrains(){
+	public void setConstrains(){
 		// creat "B"
 		for (int i = 1; i < 9; i++)
 			this.setSquareStatus(i, 9, "B");
@@ -214,6 +214,14 @@ public class Board {
 		// create "T"
 		this.setSquareStatus(12, 27, "T");	
 		this.setSquareStatus(24, 28, "T");	
+	}
+
+	public Square transfer2Square(int x, int y) {
+		if (x == 12 && y == 27)
+			return this.getSquare(24, 28);
+		if (x == 24 && y == 28)
+			return this.getSquare(12,  27);
+		return null;
 	}
 	
 	
