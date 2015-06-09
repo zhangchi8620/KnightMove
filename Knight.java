@@ -68,23 +68,21 @@ public class Knight{
 			lastY = currentY;
 			currentX += s.x;
 			currentY += s.y;
-//			// add transfer "T"
-//			if (board.getSquare(currentX, currentY).getSquareStatus() == "T" ){
-//				Square transferSquare = board.transfer2Square(currentX, currentY);
-//				currentX = transferSquare.x;
-//				currentY = transferSquare.y;
-//			}
 			board.updateKnightOnBoard(this);
 		}
 	}
 	
-	public void transfer2Square(Board board){
+	public boolean transfer2Square(Board board){
 		if (board.getSquare(currentX, currentY).getSquareStatus() == "T" ){
 			Square transferSquare = board.transfer2Square(currentX, currentY);
+			lastX = currentX;
+			lastY = currentY;
 			currentX = transferSquare.x;
 			currentY = transferSquare.y;
 			board.updateKnightOnBoard(this);
+			return true;
 		}
+		return false;
 	}
 	
 	public void printKnight(){

@@ -181,17 +181,22 @@ public class Questions {
 	
 	private static ArrayList<Square> neighborsCons(Knight knight) {
 		ArrayList<Square> nbrs = new ArrayList<Square>();
-
-		knight.transfer2Square(board);
+		boolean ifTransfer = knight.transfer2Square(board);
+		
+		if (ifTransfer){
+			System.out.println(board.getSquare(knight.lastX, knight.lastY).getSquareCount());
+			board.setSquareCount(knight.currentX, knight.currentY, board.getSquare(knight.lastX, knight.lastY).getSquareCount());
+			pathMap.put(board.getSquare(knight.currentX, knight.currentY), board.getSquare(knight.lastX, knight.lastY));
+		}
 		
 		Square k = board.getSquare(knight.currentX, knight.currentY);
-		board.setSquareCount(knight.currentX, knight.currentY, k.getSquareCount()+1);	
 		
 		for(Move m : moves){
 			if (knight.validMoveCons(m, board)){
 				Square s = board.getSquare(knight.currentX+m.x, knight.currentY+m.y);
 				if (s.count == 0 || s.count > k.getSquareCount()+contCons(k)){
-//					board.setSquareCount(s.x, s.y, k.getSquareCount()+contCons(s));		
+					board.setSquareCount(s.x, s.y, k.getSquareCount()+1+contCons(s));	
+				
 					pathMap.put(s, board.getSquare(knight.currentX, knight.currentY));
 					nbrs.add(s);
 				}
@@ -256,7 +261,7 @@ public class Questions {
 
 	private static boolean checkEndCons(ArrayList<Square> steps, ArrayList<Square> q, int endX, int endY, int count) {
 		for (Square s: q){
-			board.setSquareCount(s.x, s.y, count+contCons(s));		
+//			board.setSquareCount(s.x, s.y, count+contCons(s));		
 //			board.printBoardCount();
 			if (s.x == endX && s.y == endY){
 				steps.add(s);
@@ -311,7 +316,6 @@ public class Questions {
 	
 	private static boolean findShortestPathCons(ArrayList<Square> steps,int startX, int startY, int endX, int endY, int count)
 	{
-//		board.printBoardCount();
 		knight.currentX = startX;
 		knight.currentY = startY;
 		
@@ -342,7 +346,7 @@ public class Questions {
 		size = 32;		
 		startX = 22;
 		startY = 27;
-		endX = 11;
+		endX = 12;
 		endY = 25;
 		knight = new Knight(startX, startY);		
 		board = new Board(size, knight);
