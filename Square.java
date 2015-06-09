@@ -27,7 +27,9 @@ public class Square{
 		return this.count;
 	}
 	
-	
+	public void printSquare(){
+		System.out.printf("[%d, %d]\n", x, y);
+	}
 	public enum Status {
 		EMPTY, OCCUPY, BARRIER, WATER, ROCK, TELEPORT, LAVA 
 	}

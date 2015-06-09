@@ -73,21 +73,23 @@ public class Questions {
 		// input in a sequence of steps 	
 		int c = 1;
 		for (Move s : steps){
-			System.out.printf("\n***** Step %d *****\n", c++);			
-			if (!knight.validMove(s, board)){
+			System.out.printf("\n***** Step %d *****\n", c++);		
+			s.printMove();
+			if (!knight.validMoveCons(s, board)){
 				System.out.println("Is Valide moves? No!");
 				return;
 			}
 			else{
 				knight.acceptMove(s, board);
 				knight.printKnight();
-				System.out.printf("count: %d\n", board.getSquare(knight.currentX, knight.currentY).getSquareCount());
+//				System.out.printf("count: %d\n", board.getSquare(knight.currentX, knight.currentY).getSquareCount());
 				s.printMove();
 				board.printBoard();
 			}
 		}
 		System.out.println("Is Valide moves? Yes.");
 	}
+	
 	
 	private static void questionTwo(){
 		// initialize board and knight
@@ -265,7 +267,7 @@ public class Questions {
 //			board.printBoardCount();
 			if (s.x == endX && s.y == endY){
 				steps.add(s);
-				board.printBoardCount();
+//				board.printBoardCount();
 				Square par = pathMap.get(s);
 				
 				while(par.count != 1){
@@ -325,7 +327,7 @@ public class Questions {
 		if(!nbrs.isEmpty()){
 			knight.printKnight();				
 			while (!checkEndCons(steps, nbrs, endX, endY, ++count)){
-				board.printBoardCount();
+//				board.printBoardCount();
 				ArrayList<Square> q = new ArrayList<Square>();
 				for(Square nb : nbrs){
 					knight.currentX = nb.x;
@@ -334,7 +336,7 @@ public class Questions {
 				}
 				nbrs = q;
 			}
-			board.printBoardCount();
+//			board.printBoardCount();
 
 			return true;
 		}
@@ -344,10 +346,10 @@ public class Questions {
 	private static void questionFour(){
 		System.out.println("\n=========== Level 4 ===========");
 		size = 32;		
-		startX = 22;
-		startY = 27;
-		endX = 12;
-		endY = 25;
+		startX = 2;
+		startY = 12;
+		endX = 28;
+		endY = 28;
 		knight = new Knight(startX, startY);		
 		board = new Board(size, knight);
 		board.setSquareCount(startX, startY, 1);
@@ -371,7 +373,7 @@ public class Questions {
 		
 		ArrayList<Move> moves = steps2moves(startX, startY, steps);
 		
-//		questionOne(moves);
+		questionOne(moves);
 		
 	}
 		

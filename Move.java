@@ -16,7 +16,7 @@ public class Move {
 			return true;
 		}
 		else{
-			System.out.println("\tWrong moving rule!");
+			System.out.printf("\tWrong moving rule! [%d, %d]\n", this.x, this.y);
 			return false;
 		}
 	}
