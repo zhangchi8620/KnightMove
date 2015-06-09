@@ -275,10 +275,10 @@ public class Questions {
 	private static void questionFour(){
 		System.out.println("\n=========== Level 4 ===========");
 		size = 32;		
-		startX = 25;
-		startY = 25;
-		endX = 23;
-		endY = 27;
+		startX = 10;
+		startY = 3;
+		endX = 12;
+		endY = 7;
 		knight = new Knight(startX, startY);		
 		board = new Board(size, knight);
 		board.setSquareCount(startX, startY, 1);
