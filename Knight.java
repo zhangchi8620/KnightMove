@@ -33,6 +33,34 @@ public class Knight{
 		return this.validMove;
 	}
 
+	public boolean validMoveCons(Move step, Board board){
+		int nX = this.currentX + step.x;
+		int nY = this.currentY + step.y;
+		
+		if (step.validMove() && nX > 0 && nX < board.size+1 && nY > 0 && nY < board.size+1 && noBarrier(step, board)){
+			this.validMove = true;
+		}
+		else
+			this.validMove = false;
+		return this.validMove;
+	}
+	
+	private boolean noBarrier(Move step, Board board){
+		if (Math.abs(step.x) == 2){
+			if (board.getSquare(this.currentX+step.x/2, this.currentY).getSquareStatus()=="B"
+			|| (board.getSquare(this.currentX+step.x/2, this.currentY+step.y).getSquareStatus()=="B"))
+				return false;
+		}
+		if (Math.abs(step.y) == 2){
+			if (board.getSquare(this.currentX, this.currentY+step.y/2).getSquareStatus()=="B"
+			|| (board.getSquare(this.currentX+step.x, this.currentY+step.y/2).getSquareStatus()=="B"))
+				return false;
+		}
+		if (board.getSquare(this.currentX+step.x, this.currentY+step.y).getSquareStatus()=="B")
+			return false;
+		return true;
+	}
+	
 	public void acceptMove(Move s, Board board){
 		if (this.validMove = true){
 			lastX = currentX;
