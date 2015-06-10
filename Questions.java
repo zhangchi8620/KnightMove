@@ -56,7 +56,10 @@ public class Questions {
 //		questionThree();
 		
 		// Q4
-		questionFour();
+//		questionFour();
+		
+		// Q5
+		questionFive();
 }
 	
 	private static void questionOne(ArrayList<Move> steps){
@@ -186,7 +189,7 @@ public class Questions {
 		boolean ifTransfer = knight.transfer2Square(board);
 		
 		if (ifTransfer){
-			System.out.println(board.getSquare(knight.lastX, knight.lastY).getSquareCount());
+//			System.out.println(board.getSquare(knight.lastX, knight.lastY).getSquareCount());
 			board.setSquareCount(knight.currentX, knight.currentY, board.getSquare(knight.lastX, knight.lastY).getSquareCount());
 			pathMap.put(board.getSquare(knight.currentX, knight.currentY), board.getSquare(knight.lastX, knight.lastY));
 		}
@@ -208,6 +211,44 @@ public class Questions {
 		return nbrs;
 	}
 	
+	
+	private static ArrayList<Square> neighborsLongest(Knight knight) {
+		ArrayList<Square> nbrs = new ArrayList<Square>();
+		boolean ifTransfer = knight.transfer2Square(board);
+		
+		if (ifTransfer){
+//			System.out.println(board.getSquare(knight.lastX, knight.lastY).getSquareCount());
+			board.setSquareCount(knight.currentX, knight.currentY, board.getSquare(knight.lastX, knight.lastY).getSquareCount());
+			pathMap.put(board.getSquare(knight.currentX, knight.currentY), board.getSquare(knight.lastX, knight.lastY));
+		}
+		
+		Square k = board.getSquare(knight.currentX, knight.currentY);
+		
+		for(Move m : moves){
+			if (knight.validMoveCons(m, board)){
+				Square s = board.getSquare(knight.currentX+m.x, knight.currentY+m.y);
+				if (s.count == 0 || s.count < k.getSquareCount()+contCons(k) && s.count != 1 && !checkLoop(knight, s)){
+					board.setSquareCount(s.x, s.y, k.getSquareCount()+1+contCons(s));	
+				
+					pathMap.put(s, board.getSquare(knight.currentX, knight.currentY));
+					nbrs.add(s);
+				}
+			}
+		}
+
+		return nbrs;
+	}
+	
+	private static boolean checkLoop(Knight k, Square n) {
+		Square par = board.getSquare(k.currentX, k.currentY);
+		while(par.count != 1){
+			if (par.x == n.x && par.y == n.y)
+				return true;
+			par = pathMap.get(par);
+		}
+		return false;
+	}
+
 	private static void questionThree(){
 		System.out.println("\n=========== Level 3 ===========");
 		size = 32;		
@@ -242,22 +283,17 @@ public class Questions {
 	private static boolean checkEnd(ArrayList<Square> steps, ArrayList<Square> q, int endX, int endY, int count) {
 		for (Square s: q){
 			board.setSquareCount(s.x, s.y, count);		
-//			board.printBoardCount();
 			if (s.x == endX && s.y == endY){
 				steps.add(s);
-//				board.printBoardCount();
 				Square par = pathMap.get(s);
 				
 				while(par.count != 1){
 					steps.add(par);
-//					System.out.printf("Path: [%d, %d]\n", par.x, par.y);
 					par = pathMap.get(par);
 				}
-				
 				return true;
 			}
 		}
-//		board.printBoardCount();
 		return false;
 	}
 
@@ -292,7 +328,6 @@ public class Questions {
 
 	private static boolean findShortestPath(ArrayList<Square> steps,int startX, int startY, int endX, int endY, int count)
 	{
-//		board.printBoardCount();
 		knight.currentX = startX;
 		knight.currentY = startY;
 		
@@ -307,7 +342,7 @@ public class Questions {
 				for(Square nb : nbrs){
 					knight.currentX = nb.x;
 					knight.currentY = nb.y;
-					q.addAll(neighborsCons(knight));
+					q.addAll(neighbors(knight));
 				}
 				nbrs = q;
 			}
@@ -375,6 +410,76 @@ public class Questions {
 		
 		questionOne(moves);
 		
+	}
+	
+	private static boolean findLongestPathCons(ArrayList<Square> steps,int startX, int startY, int endX, int endY, int count)
+	{
+		knight.currentX = startX;
+		knight.currentY = startY;
+		
+		ArrayList<Square> nbrs = new ArrayList<Square>();
+		nbrs.addAll(neighborsCons(knight));
+		int c = 1;
+		while(!nbrs.isEmpty() && c < board.size*board.size){
+			System.out.printf("c: %d\n", c);
+//			board.printBoardCount();
+
+			knight.printKnight();				
+			
+			ArrayList<Square> q = new ArrayList<Square>();
+			for(Square nb : nbrs){
+				knight.currentX = nb.x;
+				knight.currentY = nb.y;
+				q.addAll(neighborsLongest(knight));
+//				board.printBoardCount();
+			}
+			nbrs = q;
+			++c;
+//			board.printBoardCount();
+		}
+		
+		Square par = pathMap.get(board.getSquare(endX, endY));
+		steps.add(par);
+
+		while (par.count != 1){
+			par = pathMap.get(par);
+			steps.add(par);
+		}
+		board.printBoardCount();
+		return false;
+	}
+	
+	public static void questionFive(){
+		System.out.println("\n=========== Level 5 ===========");
+		size = 32;		
+		startX = 32;
+		startY = 1;
+		endX = 5;
+		endY = 5;
+		knight = new Knight(startX, startY);		
+		board = new Board(size, knight);
+		board.setSquareCount(startX, startY, 1);
+		board.setStartEnd(startX, startY, endX, endY);
+		board.setConstrains();
+		board.printInitialBoard();
+		
+		ArrayList<Square> steps = new ArrayList<Square>();		
+		ArrayList<Square> q = new ArrayList<Square>();		
+		steps.clear();
+		q.add(board.getSquare(startX, startY));
+		findLongestPathCons(steps, startX, startY, endX, endY, 1);
+		
+	    Collections.reverse(steps);
+		System.out.println("Find Longest Path with Cons:");
+		int c = 1;
+		for (Square m : steps){
+			System.out.printf("%d: %d, %d\n", c++, m.x, m.y);
+		}
+		
+		steps.remove(0);
+		ArrayList<Move> moves = steps2moves(startX, startY, steps);
+		
+		questionOne(moves);
 	}
 		
 }
