@@ -24,4 +24,5 @@ public class Move {
 	public void printMove(){
 		System.out.printf("Move: \t   [%d, %d]\n", x, y);
 	}
+	
 }

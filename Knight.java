@@ -40,9 +40,6 @@ public class Knight{
 		
 		boolean isTransfer = Math.abs(move.x) == 12 && Math.abs(move.y) ==1 && ((this.currentX == 24 && this.currentY==28) || (this.currentX==12 && this.currentY==27)); 
 		
-		if (isTransfer)
-			System.out.println("TTTTTT");
-		
 		if ( isTransfer || (move.validMove() && nX > 0 && nX < board.size+1 && nY > 0 && nY < board.size+1 && noBarrierRock(move, board))){
 			this.validMove = true;
 		}
@@ -75,19 +72,30 @@ public class Knight{
 			lastY = currentY;
 			currentX += s.x;
 			currentY += s.y;
-//			transfer2Square(board);
 			board.updateKnightOnBoard(this);
 		}
 	}
 	
+	public void acceptMoveCons(Move s, Board board){
+		transfer2Square(board);
+		if (this.validMove = true){
+			lastX = currentX;
+			lastY = currentY;
+			currentX += s.x;
+			currentY += s.y;
+			board.updateKnightOnBoardCons(this);
+		}
+	}
+	
 	public boolean transfer2Square(Board board){
-		if (board.getSquare(currentX, currentY).getSquareStatus() == "T" ){
+		if (board.getSquare(currentX, currentY).getSquareStatus() == "T" ){ 
 			Square transferSquare = board.transfer2Square(currentX, currentY);
 			lastX = currentX;
 			lastY = currentY;
 			currentX = transferSquare.x;
 			currentY = transferSquare.y;
-			board.updateKnightOnBoard(this);
+			board.updateKnightOnBoardCons(this);
+			board.setConstrains();
 			return true;
 		}
 		return false;

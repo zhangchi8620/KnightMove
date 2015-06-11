@@ -36,14 +36,24 @@ public class Board {
 	protected void updateKnightOnBoard(Knight knight){
 		if (knight.lastX != Integer.MIN_VALUE){
 			squares[knight.lastX-1][knight.lastY-1].setSquareStatus(".");
-			this.setConstrains();
+//			this.setConstrains();
 			squares[this.startX][this.startY].setSquareStatus("S");			
 			squares[knight.currentX-1][knight.currentY-1].setSquareStatus("K");
 			}
 	}
 	
+	protected void updateKnightOnBoardCons(Knight knight){
+		if (knight.lastX != Integer.MIN_VALUE){
+			squares[knight.lastX-1][knight.lastY-1].setSquareStatus(".");
+			squares[this.startX][this.startY].setSquareStatus("S");			
+			squares[knight.currentX-1][knight.currentY-1].setSquareStatus("K");
+			this.setConstrains();
+			}
+		this.setConstrains();
+	}
+	
 	public void printInitialBoard(){
-		System.out.println("Initial this");
+		System.out.println("Initial board:");
 		for (int row = 0 ; row < this.size; row++){
 			for (int col = 0; col < this.size; col++){
 			System.out.printf("%s ", squares[row][col].status);
@@ -64,10 +74,11 @@ public class Board {
 		System.out.printf("\n");
 	}
 	
+	
 	public void printBoardCount(){
 		for (Square[] row : squares){
 			for (Square s : row){
-				System.out.printf("%s ", s.count);
+				System.out.printf("%s\t", s.count);
 			}
 		System.out.println("\n");
 		}
